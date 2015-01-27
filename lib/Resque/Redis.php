@@ -228,7 +228,7 @@ class Resque_Redis
 			return $this->driver->__call($name, $args);
 		}
 		catch (CredisException $e) {
-			return false;
+			throw new Resque_Exception(sprintf('Redis error [%s]', $e->getMessage()), 0, $e);
 		}
 	}
 
