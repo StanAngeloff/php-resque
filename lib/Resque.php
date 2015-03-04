@@ -101,8 +101,12 @@ class Resque
 	 */
 	public static function push($queue, $item)
 	{
+		$string = json_encode($item);
+		if ($string === false && json_last_error() !== JSON_ERROR_NONE) {
+			throw new RuntimeException('Unable to encode item as a JSON string.');
+		}
 		self::redis()->sadd('queues', $queue);
-		$length = self::redis()->rpush('queue:' . $queue, json_encode($item));
+		$length = self::redis()->rpush('queue:' . $queue, $string);
 		if ($length < 1) {
 			return false;
 		}
